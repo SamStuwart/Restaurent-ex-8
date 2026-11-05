@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>La Brace Trattoria | Join the Table</title>
+<meta name="description" content="La Brace Trattoria: a ReactJS restaurant site with a validated member registration form and React Router navigation.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --cream: #F1E7D3;
+  --paper: #FBF6EC;
+  --ember: #A6402E;
+  --wine: #6B1E14;
+  --gold: #C9A24B;
+  --char: #2B2321;
+  --char-soft: #3A2E28;
+  --muted: #6E5F55;
+  --line: #DCCFB8;
+  --error: #A3200F;
+  --ok: #2F6B3A;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  line-height: 1.6;
+  background: var(--cream);
+  color: var(--char);
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+h1, h2, h3 {
+  font-family: 'Playfair Display', serif;
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0;
+}
+
+/* Header and navigation */
+header {
+  background: var(--char);
+  color: var(--cream);
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+}
+
+.brand {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--cream);
+  text-decoration: none;
+}
+
+.brand span { color: var(--gold); }
+
+nav { display: flex; gap: 24px; }
+
+nav a {
+  color: var(--cream);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 4px 0;
+  border-bottom: 2px solid transparent;
+}
+
+nav a:hover { color: var(--gold); }
+nav a.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+main { flex: 1; }
+
+/* Home */
+.hero {
+  background:
+    radial-gradient(circle at 80% 110%, rgba(201, 162, 75, 0.35), transparent 45%),
+    radial-gradient(circle at 15% 120%, rgba(166, 64, 46, 0.75), transparent 55%),
+    var(--char-soft);
+  color: var(--cream);
+  padding: 88px 24px;
+}
+
+.hero-inner { max-width: 912px; margin: 0 auto; }
+
+.eyebrow {
+  margin: 0 0 12px;
+  color: var(--gold);
+  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.hero h1 { font-size: clamp(2.4rem, 7vw, 4.25rem); max-width: 14ch; }
+.hero p.lead { max-width: 52ch; margin: 20px 0 32px; font-weight: 300; font-size: 1.1rem; }
+
+.section { max-width: 960px; margin: 0 auto; padding: 56px 24px; }
+.section > h2 { font-size: 2rem; color: var(--wine); margin-bottom: 8px; }
+.section > p { color: var(--muted); margin: 0 0 28px; }
+
+.perks {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 28px;
+}
+
+.perks li { border-top: 3px solid var(--gold); padding-top: 14px; }
+.perks h3 { font-size: 1.2rem; margin-bottom: 6px; }
+.perks p { margin: 0; color: var(--muted); font-size: 0.95rem; }
+
+/* Menu */
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 36px 48px;
+}
+
+.menu-group h3 {
+  font-size: 1.35rem;
+  color: var(--ember);
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 8px;
+  margin-bottom: 12px;
+}
+
+.dish { display: flex; justify-content: space-between; gap: 16px; padding: 7px 0; }
+.dish strong { font-weight: 600; }
+.dish span { color: var(--muted); font-size: 0.9rem; display: block; }
+.dish b { font-weight: 600; color: var(--wine); white-space: nowrap; }
+
+/* Buttons */
+.button, button {
+  display: inline-block;
+  padding: 13px 26px;
+  background: var(--ember);
+  color: #FFFFFF;
+  border: none;
+  border-radius: 6px;
+  font: 600 1rem 'Poppins', sans-serif;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.button:hover, button:hover:enabled { background: var(--wine); }
+
+button:disabled {
+  background: #B9AD9C;
+  color: #4A4038;
+  cursor: not-allowed;
+}
+
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 2px;
+}
+
+/* Registration form */
+.card {
+  max-width: 720px;
+  margin: 48px auto;
+  padding: 36px;
+  background: var(--paper);
+  border-top: 5px solid var(--ember);
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(43, 35, 33, 0.14);
+}
+
+.card h1 { font-size: 2.1rem; color: var(--wine); }
+.card .intro { margin: 8px 0 24px; color: var(--muted); }
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px 20px;
+}
+
+.field { min-width: 0; }
+.field.wide { grid-column: 1 / -1; }
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+input, select {
+  width: 100%;
+  padding: 11px 12px;
+  background: #FFFFFF;
+  border: 1px solid #A89A85;
+  border-radius: 6px;
+  color: var(--char);
+  font: 400 1rem 'Poppins', sans-serif;
+}
+
+input.invalid, select.invalid { border: 2px solid var(--error); }
+input.valid, select.valid { border: 2px solid var(--ok); }
+
+small.error {
+  display: block;
+  margin-top: 5px;
+  color: var(--error);
+  font-size: 0.82rem;
+}
+
+.submit-row { margin-top: 24px; }
+.submit-row button { width: 100%; }
+
+.hint {
+  margin: 10px 0 0;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.success {
+  margin: 0 0 20px;
+  padding: 12px 16px;
+  background: #E5F1E4;
+  border-left: 4px solid var(--ok);
+  color: #1F4F29;
+  font-weight: 600;
+}
+
+footer {
+  background: var(--char);
+  color: var(--cream);
+  padding: 20px 24px;
+  text-align: center;
+  font-size: 0.85rem;
+}
+
+footer p { margin: 2px 0; }
+
+@media (max-width: 600px) {
+  header { justify-content: center; text-align: center; }
+  nav { width: 100%; justify-content: center; gap: 20px; }
+  .hero { padding: 56px 16px; }
+  .section { padding: 40px 16px; }
+  .card { margin: 16px; padding: 22px 18px; }
+  .card h1 { font-size: 1.75rem; }
+  .form-grid { grid-template-columns: 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<noscript>This site is built with ReactJS. Please enable JavaScript to view it.</noscript>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@remix-run/router@1.19.2/dist/router.umd.min.js"></script>
+<script src="https://unpkg.com/react-router@6.26.2/dist/umd/react-router.production.min.js"></script>
+<script src="https://unpkg.com/react-router-dom@6.26.2/dist/umd/react-router-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.25.6/babel.min.js"></script>
+
+<script type="text/babel" data-presets="react">
+const { useState } = React;
+// HashRouter keeps page refreshes working on GitHub Pages, which has no server-side routing.
+const { HashRouter, Routes, Route, Link, NavLink } = ReactRouterDOM;
+
+const MENU = [
+  { title: "Wood-Fired Pizza", dishes: [
+    { name: "Margherita", note: "San Marzano tomato, fior di latte, basil", price: "₹420" },
+    { name: "Diavola", note: "Spiced salami, chilli oil, mozzarella", price: "₹520" },
+  ]},
+  { title: "Pasta & Risotto", dishes: [
+    { name: "Tagliatelle al Ragù", note: "Slow-cooked beef and red wine", price: "₹560" },
+    { name: "Wild Mushroom Risotto", note: "Porcini, thyme, aged parmesan", price: "₹540" },
+  ]},
+  { title: "Grill & Mains", dishes: [
+    { name: "Pollo alla Brace", note: "Charcoal chicken, lemon, rosemary", price: "₹640" },
+    { name: "Grilled Sea Bass", note: "Salsa verde, roasted potatoes", price: "₹780" },
+  ]},
+  { title: "Desserts", dishes: [
+    { name: "Tiramisù", note: "Espresso, mascarpone, cocoa", price: "₹320" },
+    { name: "Panna Cotta", note: "Vanilla bean, berry compote", price: "₹290" },
+  ]},
+];
+
+const GENDERS = ["Male", "Female", "Other"];
+const STATES = ["Tamil Nadu", "Kerala", "Karnataka", "Andhra Pradesh"];
+
+const EMPTY_FORM = { name: "", email: "", password: "", age: "", mobile: "", gender: "", state: "" };
+
+// Each validator returns an error message, or "" when the value is valid.
+const validators = {
+  name: (v) =>
+    !v.trim() ? "Full name is required."
+    : !/^[A-Za-z ]+$/.test(v.trim()) ? "Name can contain only letters and spaces."
+    : "",
+  email: (v) =>
+    !v ? "Email address is required."
+    : !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? "Enter a valid email address, like name@example.com."
+    : "",
+  password: (v) =>
+    !v ? "Password is required."
+    : !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/.test(v) ? "Use at least 8 characters with an uppercase letter, a lowercase letter and a number."
+    : "",
+  age: (v) =>
+    !v ? "Age is required."
+    : !/^\d+$/.test(v) || Number(v) < 18 || Number(v) > 30 ? "Age must be a whole number between 18 and 30."
+    : "",
+  mobile: (v) =>
+    !v ? "Mobile number is required."
+    : !/^\d{10}$/.test(v) ? "Mobile number must contain exactly 10 digits."
+    : "",
+  gender: (v) => (!v ? "Please select your gender." : ""),
+  state: (v) => (!v ? "Please select your state." : ""),
+};
+
+function Field({ label, name, error, show, wide, children }) {
+  const className = !show ? "" : error ? "invalid" : "valid";
+  return (
+    <div className={wide ? "field wide" : "field"}>
+      <label htmlFor={name}>{label}</label>
+      {React.cloneElement(children, {
+        id: name,
+        name,
+        className,
+        required: true,
+        "aria-invalid": show && !!error,
+        "aria-describedby": show && error ? name + "-error" : undefined,
+      })}
+      {show && error && <small className="error" id={name + "-error"}>{error}</small>}
+    </div>
+  );
+}
+
+function Home() {
+  return (
+    <>
+      <section className="hero">
+        <div className="hero-inner">
+          <p className="eyebrow">Old Quarter · Fire &amp; flour</p>
+          <h1>Italian cooking, over open flame.</h1>
+          <p className="lead">
+            Pizza from the wood oven, fresh pasta and charcoal-grilled mains.
+            Join the La Brace table to book sooner and earn rewards.
+          </p>
+          <Link className="button" to="/register">Register Now</Link>
+        </div>
+      </section>
+      <section className="section">
+        <h2>Why join the table</h2>
+        <p>Membership is free for guests aged 18 to 30.</p>
+        <ul className="perks">
+          <li><h3>Priority booking</h3><p>Reserve weekend tables before they open to everyone else.</p></li>
+          <li><h3>Rewards on every meal</h3><p>Earn points each visit and spend them on your next dinner.</p></li>
+          <li><h3>Chef's table nights</h3><p>Get first invitations to tasting menus and new dishes.</p></li>
+        </ul>
+      </section>
+    </>
+  );
+}
+
+function Menu() {
+  return (
+    <section className="section">
+      <h2>Our Menu</h2>
+      <p>A short list, cooked with care.</p>
+      <div className="menu-grid">
+        {MENU.map((group) => (
+          <div className="menu-group" key={group.title}>
+            <h3>{group.title}</h3>
+            {group.dishes.map((dish) => (
+              <div className="dish" key={dish.name}>
+                <div><strong>{dish.name}</strong><span>{dish.note}</span></div>
+                <b>{dish.price}</b>
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function Register() {
+  const [form, setForm] = useState(EMPTY_FORM);
+  const [touched, setTouched] = useState({});
+  const [registeredName, setRegisteredName] = useState("");
+
+  const errors = {};
+  Object.keys(validators).forEach((key) => { errors[key] = validators[key](form[key]); });
+  const valid = Object.values(errors).every((message) => message === "");
+
+  const updateField = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+    setRegisteredName("");
+  };
+
+  const markTouched = (e) => setTouched({ ...touched, [e.target.name]: true });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!valid) return;
+    setRegisteredName(form.name.trim());
+    setForm(EMPTY_FORM);
+    setTouched({});
+  };
+
+  const show = (key) => Boolean(touched[key] || form[key]);
+  const bind = (key) => ({ value: form[key], onChange: updateField, onBlur: markTouched });
+
+  return (
+    <div className="card">
+      <h1>Join La Brace</h1>
+      <p className="intro">Create your member account. All fields are required.</p>
+
+      {registeredName && (
+        <p className="success" role="status">
+          Benvenuto, {registeredName}! Registration completed successfully.
+        </p>
+      )}
+
+      <form onSubmit={handleSubmit} noValidate>
+        <div className="form-grid">
+          <Field label="Full Name" name="name" wide error={errors.name} show={show("name")}>
+            <input type="text" autoComplete="name" placeholder="Enter your name" {...bind("name")} />
+          </Field>
+          <Field label="Email Address" name="email" error={errors.email} show={show("email")}>
+            <input type="email" autoComplete="email" placeholder="name@example.com" {...bind("email")} />
+          </Field>
+          <Field label="Password" name="password" error={errors.password} show={show("password")}>
+            <input type="password" autoComplete="new-password" placeholder="Minimum 8 characters" {...bind("password")} />
+          </Field>
+          <Field label="Age" name="age" error={errors.age} show={show("age")}>
+            <input type="number" min="18" max="30" placeholder="18 to 30" {...bind("age")} />
+          </Field>
+          <Field label="Mobile Number" name="mobile" error={errors.mobile} show={show("mobile")}>
+            <input type="tel" inputMode="numeric" autoComplete="tel" placeholder="10-digit number" {...bind("mobile")} />
+          </Field>
+          <Field label="Gender" name="gender" error={errors.gender} show={show("gender")}>
+            <select {...bind("gender")}>
+              <option value="">Select gender</option>
+              {GENDERS.map((g) => <option key={g} value={g}>{g}</option>)}
+            </select>
+          </Field>
+          <Field label="State" name="state" error={errors.state} show={show("state")}>
+            <select {...bind("state")}>
+              <option value="">Select state</option>
+              {STATES.map((s) => <option key={s} value={s}>{s}</option>)}
+            </select>
+          </Field>
+        </div>
+
+        <div className="submit-row">
+          <button type="submit" disabled={!valid}>Submit Registration</button>
+          {!valid && <p className="hint">The button turns on once every field is valid.</p>}
+        </div>
+      </form>
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <HashRouter>
+      <header>
+        <Link className="brand" to="/">La <span>Brace</span> Trattoria</Link>
+        <nav aria-label="Main">
+          <NavLink to="/" end>Home</NavLink>
+          <NavLink to="/menu">Menu</NavLink>
+          <NavLink to="/register">Register</NavLink>
+        </nav>
+      </header>
+      <main>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/menu" element={<Menu />} />
+          <Route path="/register" element={<Register />} />
+        </Routes>
+      </main>
+      <footer>
+        <p>12 Forno Lane, Old Quarter</p>
+        <p>© 2026 La Brace Trattoria | All Rights Reserved | Ex 8 · URK24CS1114</p>
+      </footer>
+    </HashRouter>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
+</body>
+</html>
